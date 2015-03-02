@@ -7,7 +7,6 @@ class PoliceAnt : public virtual Insect
 {
 public:
     PoliceAnt(Anthill*);
-    ~PoliceAnt();
     void Tick();
 };
 

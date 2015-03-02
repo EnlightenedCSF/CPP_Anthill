@@ -10,16 +10,20 @@
 #include "pestant.h"
 #include "worldoptions.h"
 #include "soldier.h"
+#include "dayinfo.h"
 
 
 Anthill::Anthill(FILE* file)
 {
+    day_ = 1;
+    dayInfo_ = new DayInfo();
     worldOptions_ = new WorldOptions(file);
 
     fscanf(file, "%i\n", &foodAmount_);
 
     insects_ = new vector<Insect*>;
     insects_->push_back(new Queen(this));
+    isQueenAlive_ = true;
 
     char type;
     int count;
@@ -63,27 +67,40 @@ Anthill::Anthill(FILE* file)
 
 Anthill::~Anthill()
 {
-    delete[] population_;
-
     if (insects_ != 0) {
         if (!insects_->empty())
             insects_->clear();
         delete insects_;
     }
+
+    delete worldOptions_;
+    delete dayInfo_;
 }
 
 void Anthill::Tick() {
-    cout << "======== ANTHILL STATISICS ========\n";
-    cout << "Food storage size: " << foodAmount_ << '\n';
+    for (unsigned int i = 0; i < insects_->size(); i++) {
+        Insect* insect = insects_->at(i);
+        insect->Tick();
+    }
 
+    cout << "============= ANTHILL STATISICS: DAY " << day_++ << " =============\n";
+    cout << "Food storage size: " << foodAmount_ << "\t( " << dayInfo_->GetFoodProduced()
+         << "+ ; " << dayInfo_->GetFoodConsumed() << "- )\n";
+
+    cout << "Queen is " << (isQueenAlive_ ? "alive" : "dead") << "\n";
     cout << "Amount of caterpillars:\t" << population_[LARVA] << '\n';
     cout << "Amount of working ants:\t" << population_[WORKING_ANT] << '\n';
+    cout << "Amount of soldiers:\t" << population_[SOLDIER] << '\n';
     cout << "Amount of police ants:\t" << population_[POLICE_ANT] << '\n';
     cout << "Amount of pests:\t" << population_[PEST_ANT] << '\n';
 
-    for (unsigned int i = 0; i < insects_->size(); i++) {
-        insects_->at(i)->Tick();
-    }
+    cout << "------\n";
+
+    cout << dayInfo_->GetPestKills() << " ants were killed by pests today\n";
+    cout << dayInfo_->GetPestKilled() << " of pests were killed by soldiers\n";
+    cout << dayInfo_->GetAntsDiedFromStarvation() << " of ants died because of lack of food\n";
+
+    dayInfo_->Refresh();
 }
 
 Queen* Anthill::GetQueen() {
@@ -96,11 +113,13 @@ Queen* Anthill::GetQueen() {
 
 void Anthill::StoreFood(int amount) {
     this->foodAmount_ += amount;
+    this->dayInfo_->ProduceFood(amount);
 }
 
 bool Anthill::TakeFood(int amount) {
     if (foodAmount_ >= amount) {
         foodAmount_ -= amount;
+        this->dayInfo_->ConsumeFood(amount);
         return true;
     }
     return false;
@@ -135,7 +154,7 @@ void Anthill::AddInsect(int antType) {
     population_[antType]++;
 }
 
-void Anthill::KillInsect(Insect *insect, int antType) {
+void Anthill::KillInsect(Insect *insect, int antType, bool wasStarvationDeath) {
     int index = -1;
     for (unsigned int i = 0; i < insects_->size(); i++) {
         if (insect == insects_->at(i)) {
@@ -147,6 +166,8 @@ void Anthill::KillInsect(Insect *insect, int antType) {
     if (index != -1) {
         insects_->erase(insects_->begin() + index);
         population_[antType]--;
+        if (wasStarvationDeath)
+            dayInfo_->RegisterStarvationDeath();
     }
 }
 
@@ -168,6 +189,7 @@ void Anthill::KillRandomInsect() {
 
     insects_->erase(insects_->begin() + index);
     population_[antType]--;
+    dayInfo_->RegisterKillByPest();
 }
 
 void Anthill::KillPest() {
@@ -175,7 +197,7 @@ void Anthill::KillPest() {
         return;
 
     int index = -1;
-    for (int i = 0; i < insects_->size(); i++) {
+    for (unsigned int i = 0; i < insects_->size(); i++) {
         if (dynamic_cast<PestAnt*>(insects_->at(i)) != 0) {
             index = i;
             break;
@@ -184,6 +206,12 @@ void Anthill::KillPest() {
 
     insects_->erase(insects_->begin() + index);
     population_[PEST_ANT]--;
+    dayInfo_->RegisterPestKilled();
+}
+
+void Anthill::KillQueen() {
+    insects_->erase(insects_->begin());
+    isQueenAlive_ = false;
 }
 
 int Anthill::GetAntCount(int antType) {

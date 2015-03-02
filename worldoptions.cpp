@@ -12,7 +12,9 @@ int WorldOptions::policeFood_;
 float WorldOptions::policeBonus_;
 int WorldOptions::workingAntFood_;
 int WorldOptions::workingAntProduction_;
-
+int WorldOptions::probToBecomePest_;
+int WorldOptions::pestFood_;
+int WorldOptions::pestKillProbability_;
 
 WorldOptions::WorldOptions(FILE* file)
 {
@@ -55,9 +57,16 @@ WorldOptions::WorldOptions(FILE* file)
     int larvaTicksToGrow = 3;
     fscanf(file, "%i\n", &larvaTicksToGrow);
     larvaTicksToGrow_ = larvaTicksToGrow;
-}
 
-WorldOptions::~WorldOptions()
-{
+    int pestFood = 2;
+    fscanf(file, "%i\n", &pestFood);
+    pestFood_ = pestFood;
 
+    int probToBecomePest = 3;
+    fscanf(file, "%i\n", &probToBecomePest);
+    probToBecomePest_ = probToBecomePest;
+
+    int pestKillProbability = 5;
+    fscanf(file, "%i\n", &pestKillProbability);
+    pestKillProbability_ = pestKillProbability;
 }

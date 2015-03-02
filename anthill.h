@@ -8,6 +8,7 @@ using namespace std;
 
 #include "insect.h"
 #include "worldoptions.h"
+#include "dayinfo.h"
 
 class Queen;
 class Insect;
@@ -28,17 +29,21 @@ public:
     int GetAntCount(int);
 
     void AddInsect(int);
-    void KillInsect(Insect*, int);
+    void KillInsect(Insect*, int, bool);
     void KillRandomInsect();
     void KillPest();
+    void KillQueen();
 
 private:
     int population_[ANT_TYPES_CNT];
     vector<Insect*>* insects_;
+    bool isQueenAlive_;
 
     int foodAmount_;
 
     WorldOptions* worldOptions_;
+    DayInfo* dayInfo_;
+    int day_;
 };
 
 #endif // ANTHILL_H

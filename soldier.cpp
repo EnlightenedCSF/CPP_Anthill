@@ -6,5 +6,6 @@ void Soldier::Tick() {
     for (int i = 0; i < WorldOptions::getSoldierPestKillAmount(); i++)
         anthill_->KillPest();
 
-    anthill_->TakeFood(WorldOptions.getSoldierFood());
+    if (!anthill_->TakeFood(WorldOptions::getSoldierFood()))
+        anthill_->KillInsect(this, SOLDIER, true);
 }

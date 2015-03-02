@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     policeant.cpp \
     queen.cpp \
     pestant.cpp \
-    soldier.cpp
+    soldier.cpp \
+    dayinfo.cpp
 
 HEADERS += \
     insect.h \
@@ -35,4 +36,5 @@ HEADERS += \
     policeant.h \
     queen.h \
     pestant.h \
-    soldier.h
+    soldier.h \
+    dayinfo.h

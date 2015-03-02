@@ -2,15 +2,16 @@
 #define INSECT_H
 
 #include "anthill.h"
+#include "worldoptions.h"
 
 class Anthill;
 
-//abstract
 class Insect
 {
 public:
     Insect(Anthill*);
     virtual void Tick() = 0;
+
 protected:
     static int consumedFood_;
     Anthill* anthill_;

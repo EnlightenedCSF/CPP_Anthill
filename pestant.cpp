@@ -6,9 +6,10 @@ PestAnt::PestAnt(Anthill* anthill) : Insect(anthill) {}
 
 void PestAnt::Tick() {
     int r = rand() % 100;
-    if (r <= 14) {
+    if (r <= WorldOptions::getPestKillProbability()) {
         anthill_->KillRandomInsect();
     }
 
-    anthill_->TakeFood(2);
+    if (!anthill_->TakeFood(WorldOptions::getPestFood()))
+        anthill_->KillInsect(this, PEST_ANT, true);
 }

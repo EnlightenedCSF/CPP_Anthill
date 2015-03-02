@@ -11,11 +11,15 @@ Caterpillar::Caterpillar(Anthill* anthill) : Insect(anthill)
 
 void Caterpillar::Tick() {
     if (ticksLeft_ == 0) {
-        anthill_->GetQueen()->EvolveLarva();
-        anthill_->KillInsect(this, LARVA);
+        Queen* queen = anthill_->GetQueen();
+        if (queen != 0)
+            queen->EvolveLarva();
+
+        anthill_->KillInsect(this, LARVA, false);
     }
     else {
+        if (!anthill_->TakeFood(WorldOptions::getLarvaFood()))
+            anthill_->KillInsect(this, LARVA, true);
         ticksLeft_--;
-        anthill_->TakeFood(WorldOptions::getLarvaFood());
     }
 }

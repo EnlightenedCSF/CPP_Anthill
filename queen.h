@@ -10,6 +10,9 @@ public:
     void Tick();
 
     void EvolveLarva();
+
+private:
+    int ticksToMakeLarva_;
 };
 
 #endif // QUEEN_H

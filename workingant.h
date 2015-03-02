@@ -7,7 +7,6 @@ class WorkingAnt : public virtual Insect
 {
 public:
     WorkingAnt(Anthill*);
-    ~WorkingAnt();
     void Tick();
 };
 
