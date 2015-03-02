@@ -1,34 +1,24 @@
 #include <stdio.h>
 #include <iostream>
+#include <stdlib.h>
+
 #include "anthill.h"
 #include "caterpillar.h"
 #include "workingant.h"
 #include "policeant.h"
 #include "queen.h"
+#include "pestant.h"
 #include "worldoptions.h"
+#include "soldier.h"
+
 
 Anthill::Anthill(FILE* file)
 {
-    foodSources_ = new vector<FoodSource*>;
-    insects_ = new vector<Insect*>;
-//    int population[ANT_TYPES_CNT] = {0,0,0};
-//    population_ = population;
-
-    int larvaFood = 3;
-    fscanf(file, "%i\n", &larvaFood);
-    WorldOptions::setLarvaFoodToGrow(larvaFood);
+    worldOptions_ = new WorldOptions(file);
 
     fscanf(file, "%i\n", &foodAmount_);
 
-    int foodStoresCnt;
-    fscanf(file, "%i\n", &foodStoresCnt);
-
-    for (int i = 0; i < foodStoresCnt; i++) {
-        int distance, capacity;
-        fscanf(file, "%i %i\n", &distance, &capacity);
-        foodSources_->push_back(new FoodSource(distance, capacity));
-    }
-
+    insects_ = new vector<Insect*>;
     insects_->push_back(new Queen(this));
 
     char type;
@@ -45,6 +35,13 @@ Anthill::Anthill(FILE* file)
                 this->AddInsect(LARVA);
             }
             break;
+
+        case 's':
+            for (int i = 0; i < count; i++) {
+                this->AddInsect(SOLDIER);
+            }
+            break;
+
         case 'w':
             for (int i = 0; i < count; i++) {
                 this->AddInsect(WORKING_ANT);
@@ -53,6 +50,11 @@ Anthill::Anthill(FILE* file)
         case 'p':
             for (int i = 0; i < count; i++) {
                 this->AddInsect(POLICE_ANT);
+            }
+            break;
+        case 'e':
+            for (int i = 0; i < count; i++) {
+                this->AddInsect(PEST_ANT);
             }
             break;
         }
@@ -68,12 +70,6 @@ Anthill::~Anthill()
             insects_->clear();
         delete insects_;
     }
-
-    if (foodSources_ != 0) {
-        if (!foodSources_->empty())
-            foodSources_->clear();
-        delete foodSources_;
-    }
 }
 
 void Anthill::Tick() {
@@ -83,6 +79,7 @@ void Anthill::Tick() {
     cout << "Amount of caterpillars:\t" << population_[LARVA] << '\n';
     cout << "Amount of working ants:\t" << population_[WORKING_ANT] << '\n';
     cout << "Amount of police ants:\t" << population_[POLICE_ANT] << '\n';
+    cout << "Amount of pests:\t" << population_[PEST_ANT] << '\n';
 
     for (unsigned int i = 0; i < insects_->size(); i++) {
         insects_->at(i)->Tick();
@@ -121,8 +118,14 @@ void Anthill::AddInsect(int antType) {
     case WORKING_ANT:
         insects_->push_back(new WorkingAnt(this));
         break;
+    case SOLDIER:
+        insects_->push_back(new Soldier(this));
+        break;
     case POLICE_ANT:
         insects_->push_back(new PoliceAnt(this));
+        break;
+    case PEST_ANT:
+        insects_->push_back(new PestAnt(this));
         break;
     default:
         insects_->push_back(new WorkingAnt(this));
@@ -147,6 +150,46 @@ void Anthill::KillInsect(Insect *insect, int antType) {
     }
 }
 
+void Anthill::KillRandomInsect() {
+    int index;
+    int antType;
+    do {
+        antType = -1;
+        index = rand() % (insects_->size() - 1) + 1;
+
+        if (dynamic_cast<Caterpillar*>(insects_->at(index)) != 0)
+            antType = LARVA;
+        else if (dynamic_cast<WorkingAnt*>(insects_->at(index)) != 0)
+            antType = WORKING_ANT;
+        else if (dynamic_cast<PoliceAnt*>(insects_->at(index)) != 0)
+            antType = POLICE_ANT;
+
+    } while (antType == -1);
+
+    insects_->erase(insects_->begin() + index);
+    population_[antType]--;
+}
+
+void Anthill::KillPest() {
+    if (population_[PEST_ANT] == 0)
+        return;
+
+    int index = -1;
+    for (int i = 0; i < insects_->size(); i++) {
+        if (dynamic_cast<PestAnt*>(insects_->at(i)) != 0) {
+            index = i;
+            break;
+        }
+    }
+
+    insects_->erase(insects_->begin() + index);
+    population_[PEST_ANT]--;
+}
+
 int Anthill::GetAntCount(int antType) {
     return population_[antType];
+}
+
+int Anthill::GetAntCount() {
+    return insects_->size() - 1;
 }

@@ -15,5 +15,5 @@ PoliceAnt::~PoliceAnt()
 }
 
 void PoliceAnt::Tick() {
-    cout << "Tick from Police ant\n";
+
 }

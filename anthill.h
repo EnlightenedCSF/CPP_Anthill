@@ -3,9 +3,10 @@ using namespace std;
 #ifndef ANTHILL_H
 #define ANTHILL_H
 
+#include <stdio.h>
 #include <vector>
+
 #include "insect.h"
-#include "foodsource.h"
 #include "worldoptions.h"
 
 class Queen;
@@ -14,7 +15,7 @@ class Insect;
 class Anthill
 {
 public:
-    Anthill(FILE* file);
+    Anthill(FILE*);
     ~Anthill();
     void Tick();
     Queen* GetQueen();
@@ -23,16 +24,21 @@ public:
     bool TakeFood(int);
     int GetFoodAmount();
 
+    int GetAntCount();
     int GetAntCount(int);
 
     void AddInsect(int);
     void KillInsect(Insect*, int);
+    void KillRandomInsect();
+    void KillPest();
+
 private:
+    int population_[ANT_TYPES_CNT];
     vector<Insect*>* insects_;
-    vector<FoodSource*>* foodSources_;
+
     int foodAmount_;
 
-    int population_[ANT_TYPES_CNT];
+    WorldOptions* worldOptions_;
 };
 
 #endif // ANTHILL_H

@@ -9,7 +9,7 @@ public:
     Caterpillar(Anthill*);
     void Tick();
 private:
-    int foodLeft_;
+    int ticksLeft_;
 };
 
 #endif // CATERPILLAR_H
