@@ -7,6 +7,7 @@
 Caterpillar::Caterpillar(Anthill* anthill) : Insect(anthill)
 {
     ticksLeft_ = WorldOptions::getLarvaTicksToGrow();
+    hp_ = WorldOptions::getLarvaHp();
 }
 
 void Caterpillar::Tick() {

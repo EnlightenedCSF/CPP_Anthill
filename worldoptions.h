@@ -26,29 +26,37 @@ public:
     static int getWorkingAntProduction() { return workingAntProduction_; }
     static int getLarvaFood() { return larvaFood_; }
     static int getLarvaTicksToGrow() { return larvaTicksToGrow_; }
-    static int getPestKillProbability() { return pestKillProbability_; }
-    static int getProbToBecomePest() { return probToBecomePest_; }
     static int getPestFood() { return pestFood_; }
+    static int getProbToSpawnPest() { return probToSpawnPest_; }
+    static int getSoldierHp() { return soldierHp_; }
+    static int getPoliceHp() { return policeHp_; }
+    static int getWorkingAntHp() { return workingAntHp_; }
+    static int getLarvaHp() { return larvaHp_; }
+    static int getPestHp() { return pestHp_; }
 
 private:
     static int queenFood_;
     static int queenLavaire_;
 
+    static int soldierHp_;
     static int soldierFood_;
     static int soldierPestKillAmount_;
 
+    static int policeHp_;
     static int policeFood_;
     static float policeBonus_;
 
+    static int workingAntHp_;
     static int workingAntFood_;
     static int workingAntProduction_;
 
+    static int larvaHp_;
     static int larvaFood_;
     static int larvaTicksToGrow_;
 
+    static int pestHp_;
     static int pestFood_;
-    static int probToBecomePest_;
-    static int pestKillProbability_;
+    static int probToSpawnPest_;
 };
 
 #endif // WORLDOPTIONS_H

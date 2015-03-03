@@ -12,6 +12,9 @@ using namespace std;
 
 class Queen;
 class Insect;
+class Soldier;
+class PestAnt;
+
 
 class Anthill
 {
@@ -30,8 +33,9 @@ public:
 
     void AddInsect(int);
     void KillInsect(Insect*, int, bool);
-    void KillRandomInsect();
-    void KillPest();
+
+    bool FightPest(Soldier*);
+    bool FightWithRandomAnt(PestAnt*);
     void KillQueen();
 
 private:

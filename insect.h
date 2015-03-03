@@ -11,10 +11,14 @@ class Insect
 public:
     Insect(Anthill*);
     virtual void Tick() = 0;
+    bool InflictDamage() {
+        return --hp_ == 0;
+    }
 
 protected:
     static int consumedFood_;
     Anthill* anthill_;
+    int hp_;
 };
 
 #endif // INSECT_H

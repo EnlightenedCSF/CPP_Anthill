@@ -10,12 +10,3 @@ Insect::Insect(Anthill* anthill)
 {
     anthill_ = anthill;
 }
-
-//int Insect::Tick() {
-//   int prob = rand() % 100;
-//   if (prob < WorldOptions::getProbToBecomePest()) {
-//       anthill_->AddInsect(PEST_ANT);
-//       return 1;
-//    }
-//    return 0;
-//}

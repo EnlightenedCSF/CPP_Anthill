@@ -1,13 +1,13 @@
-#include <stdlib.h>
-
 #include "pestant.h"
 
-PestAnt::PestAnt(Anthill* anthill) : Insect(anthill) {}
+PestAnt::PestAnt(Anthill* anthill) : Insect(anthill) {
+    hp_ = WorldOptions::getPestHp();
+}
 
 void PestAnt::Tick() {
-    int r = rand() % 100;
-    if (r <= WorldOptions::getPestKillProbability()) {
-        anthill_->KillRandomInsect();
+
+    if (!anthill_->FightWithRandomAnt(this)) {
+        anthill_->KillInsect(this, PEST_ANT, false);
     }
 
     if (!anthill_->TakeFood(WorldOptions::getPestFood()))

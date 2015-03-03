@@ -8,6 +8,7 @@
 #include "policeant.h"
 #include "queen.h"
 #include "pestant.h"
+#include "insect.h"
 #include "worldoptions.h"
 #include "soldier.h"
 #include "dayinfo.h"
@@ -171,42 +172,57 @@ void Anthill::KillInsect(Insect *insect, int antType, bool wasStarvationDeath) {
     }
 }
 
-void Anthill::KillRandomInsect() {
+bool Anthill::FightWithRandomAnt(PestAnt *pest) {
     int index;
-    int antType;
+    bool isTargetDead = false;
+    int antType = -1;
+
     do {
-        antType = -1;
         index = rand() % (insects_->size() - 1) + 1;
 
-        if (dynamic_cast<Caterpillar*>(insects_->at(index)) != 0)
-            antType = LARVA;
-        else if (dynamic_cast<WorkingAnt*>(insects_->at(index)) != 0)
-            antType = WORKING_ANT;
-        else if (dynamic_cast<PoliceAnt*>(insects_->at(index)) != 0)
-            antType = POLICE_ANT;
+        PestAnt* p = dynamic_cast<PestAnt*>(insects_->at(index));
+        if (p == 0) {
+            if (insects_->at(index)->InflictDamage())
+                isTargetDead = true;
 
+            if (dynamic_cast<WorkingAnt*>(insects_->at(index)))
+                antType = WORKING_ANT;
+            else if (dynamic_cast<Soldier*>(insects_->at(index)))
+                antType = SOLDIER;
+            else if (dynamic_cast<Caterpillar*>(insects_->at(index)))
+                antType = LARVA;
+            else if (dynamic_cast<PoliceAnt*>(insects_->at(index)))
+                antType = POLICE_ANT;
+
+            break;
+        }
     } while (antType == -1);
 
-    insects_->erase(insects_->begin() + index);
-    population_[antType]--;
-    dayInfo_->RegisterKillByPest();
+    if (isTargetDead) {
+        insects_->erase(insects_->begin() + index);
+        population_[antType]--;
+    }
+
+    return !pest->InflictDamage();
 }
 
-void Anthill::KillPest() {
-    if (population_[PEST_ANT] == 0)
-        return;
-
+bool Anthill::FightPest(Soldier *soldier) {
     int index = -1;
     for (unsigned int i = 0; i < insects_->size(); i++) {
-        if (dynamic_cast<PestAnt*>(insects_->at(i)) != 0) {
-            index = i;
+        PestAnt* pest = dynamic_cast<PestAnt*>(insects_->at(i));
+        if (pest != 0) {
+            if (pest->InflictDamage()) {
+                index = i;
+            }
             break;
         }
     }
+    if (index != -1) {
+        insects_->erase(insects_->begin() + index);
+        population_[PEST_ANT]--;
+    }
 
-    insects_->erase(insects_->begin() + index);
-    population_[PEST_ANT]--;
-    dayInfo_->RegisterPestKilled();
+    return !soldier->InflictDamage();
 }
 
 void Anthill::KillQueen() {

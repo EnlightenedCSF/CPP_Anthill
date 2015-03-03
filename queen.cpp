@@ -17,14 +17,5 @@ void Queen::Tick() {
 }
 
 void Queen::EvolveLarva() {
-
-    float probPestCnt = anthill_->GetAntCount(WORKING_ANT) * (WorldOptions::getProbToBecomePest() / (float)100);
-    int soldierEffectiveness = anthill_->GetAntCount(SOLDIER) * WorldOptions::getSoldierPestKillAmount();
-
-    if (probPestCnt > soldierEffectiveness) {
-        anthill_->AddInsect(SOLDIER);
-    }
-    else {
-        anthill_->AddInsect(WORKING_ANT);
-    }
+    anthill_->AddInsect(WORKING_ANT);
 }
