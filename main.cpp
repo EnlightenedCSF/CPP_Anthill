@@ -24,7 +24,6 @@ int main()
 
     fprintf(config, "%i\n", 3); //policeHP
     fprintf(config, "%i\n", 2); // policeFood
-    fprintf(config, "%f\n", 0.1); // policeBonus
 
     fprintf(config, "%i\n", 2); // workingAntHP
     fprintf(config, "%i\n", 1); // workingAntFood
@@ -38,10 +37,14 @@ int main()
     fprintf(config, "%i\n", 2); // pestFood
     fprintf(config, "%i\n", 5); // probToSpawnPest
 
+    fprintf(config, "%i\n", 5); // police slaves count
+
     fprintf(config, "%i\n", 70); // foodStorageSize
 
-    fprintf(config, "%c %i\n", 's', 1);
-    fprintf(config, "%c %i\n", 'e', 1);
+    fprintf(config, "%c %i\n", 'w', 1);
+    fprintf(config, "%c %i\n", 'p', 1);
+    fprintf(config, "%c %i\n", 'e', 2);
+
     fclose(config);
 
     config = fopen("config.txt", "r");

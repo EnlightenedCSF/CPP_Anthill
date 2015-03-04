@@ -20,7 +20,9 @@ Anthill::Anthill(FILE* file)
     dayInfo_ = new DayInfo();
     worldOptions_ = new WorldOptions(file);
 
-    fscanf(file, "%i\n", &foodAmount_);
+    int temp;
+    fscanf(file, "%i\n", &temp);
+    foodAmount_ = (double) temp;
 
     insects_ = new vector<Insect*>;
     insects_->push_back(new Queen(this));
@@ -79,9 +81,11 @@ Anthill::~Anthill()
 }
 
 void Anthill::Tick() {
-    for (unsigned int i = 0; i < insects_->size(); i++) {
-        Insect* insect = insects_->at(i);
-        insect->Tick();
+    if (day_ != 1) {
+        for (unsigned int i = 0; i < insects_->size(); i++) {
+            Insect* insect = insects_->at(i);
+            insect->Tick();
+        }
     }
 
     cout << "============= ANTHILL STATISICS: DAY " << day_++ << " =============\n";
@@ -112,12 +116,12 @@ Queen* Anthill::GetQueen() {
     return 0;
 }
 
-void Anthill::StoreFood(int amount) {
+void Anthill::StoreFood(double amount) {
     this->foodAmount_ += amount;
     this->dayInfo_->ProduceFood(amount);
 }
 
-bool Anthill::TakeFood(int amount) {
+bool Anthill::TakeFood(double amount) {
     if (foodAmount_ >= amount) {
         foodAmount_ -= amount;
         this->dayInfo_->ConsumeFood(amount);
@@ -131,6 +135,8 @@ int Anthill::GetFoodAmount() {
 }
 
 void Anthill::AddInsect(int antType) {
+    PoliceAnt* newOfficer;
+
     switch (antType) {
     case LARVA:
         insects_->push_back(new Caterpillar(this));
@@ -138,14 +144,26 @@ void Anthill::AddInsect(int antType) {
     case WORKING_ANT:
         insects_->push_back(new WorkingAnt(this));
         break;
-    case SOLDIER:
-        insects_->push_back(new Soldier(this));
-        break;
     case POLICE_ANT:
+        newOfficer = new PoliceAnt(this);
+        for (unsigned int i = 0; i < insects_->size(); i++) {
+            if (newOfficer->GetControlledAntsCount() >= WorldOptions::getPoliceWorkers())
+                break;
+
+            WorkingAnt* ant = dynamic_cast<WorkingAnt*>(insects_->at(i));
+            if (ant != 0 && !ant->HasFather()) {
+                ant->FindFather(newOfficer);
+                newOfficer->Benny();
+            }
+        }
+
         insects_->push_back(new PoliceAnt(this));
         break;
     case PEST_ANT:
         insects_->push_back(new PestAnt(this));
+        break;
+    case SOLDIER:
+        insects_->push_back(new Soldier(this));
         break;
     default:
         insects_->push_back(new WorkingAnt(this));
@@ -165,6 +183,22 @@ void Anthill::KillInsect(Insect *insect, int antType, bool wasStarvationDeath) {
     }
 
     if (index != -1) {
+        WorkingAnt* ant = dynamic_cast<WorkingAnt*>(insects_->at(index));
+        if (ant != 0) {
+            ant->GetFather()->Penny();
+        }
+        else {
+            PoliceAnt* pAnt = dynamic_cast<PoliceAnt*>(insects_->at(index));
+            if (pAnt != 0) {
+                for (unsigned int j = 0; j < insects_->size(); j++){
+                    ant = dynamic_cast<WorkingAnt*>(insects_->at(j));
+                    if (ant != 0 && ant->GetFather() == pAnt) {
+                        ant->LoseFather();
+                    }
+                }
+            }
+        }
+
         insects_->erase(insects_->begin() + index);
         population_[antType]--;
         if (wasStarvationDeath)
@@ -173,6 +207,13 @@ void Anthill::KillInsect(Insect *insect, int antType, bool wasStarvationDeath) {
 }
 
 bool Anthill::FightWithRandomAnt(PestAnt *pest) {
+    int cnt = 0;
+    for (int  i = 0; i < ANT_TYPES_CNT; i++) {
+        cnt += population_[i];
+    }
+    if (cnt == 0)
+        return true;
+
     int index;
     bool isTargetDead = false;
     int antType = -1;
@@ -199,8 +240,9 @@ bool Anthill::FightWithRandomAnt(PestAnt *pest) {
     } while (antType == -1);
 
     if (isTargetDead) {
-        insects_->erase(insects_->begin() + index);
-        population_[antType]--;
+        KillInsect(insects_->at(index), antType, false);
+//        insects_->erase(insects_->begin() + index);
+//        population_[antType]--;
     }
 
     return !pest->InflictDamage();

@@ -10,7 +10,11 @@ WorkingAnt::WorkingAnt(Anthill* anthill) : Insect(anthill) {
 }
 
 void WorkingAnt::Tick() {
-    anthill_->StoreFood(WorldOptions::getWorkingAntProduction());
+    double production = WorldOptions::getWorkingAntProduction();
+    if (HasFather())
+        production *= 1.1;
+
+    anthill_->StoreFood(production);
     if (!anthill_->TakeFood(WorldOptions::getWorkingAntFood()))
         anthill_->KillInsect(this, WORKING_ANT, true);
 }

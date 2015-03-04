@@ -15,11 +15,11 @@ void DayInfo::Refresh() {
     hungerDead_ = 0;
 }
 
-void DayInfo::ProduceFood(int amount) {
+void DayInfo::ProduceFood(double amount) {
     foodProduction_ += amount;
 }
 
-void DayInfo::ConsumeFood(int amount) {
+void DayInfo::ConsumeFood(double amount) {
     foodLoss_ += amount;
 }
 

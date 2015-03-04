@@ -12,13 +12,13 @@ int WorldOptions::soldierFood_;
 int WorldOptions::soldierPestKillAmount_;
 int WorldOptions::policeHp_;
 int WorldOptions::policeFood_;
-float WorldOptions::policeBonus_;
 int WorldOptions::workingAntHp_;
 int WorldOptions::workingAntFood_;
 int WorldOptions::workingAntProduction_;
 int WorldOptions::pestFood_;
 int WorldOptions::pestHp_;
 int WorldOptions::probToSpawnPest_;
+int WorldOptions::policeWorkersCount_;
 
 
 WorldOptions::WorldOptions(FILE* file)
@@ -50,10 +50,6 @@ WorldOptions::WorldOptions(FILE* file)
     int policeFood = 2;
     fscanf(file, "%i\n", &policeFood);
     policeFood_ = policeFood;
-
-    float policeFoodMiningIncrease = 0;
-    fscanf(file, "%f\n", &policeFoodMiningIncrease);
-    policeBonus_ = policeFoodMiningIncrease;
 
     int workingAntHp = 2;
     fscanf(file, "%i\n", &workingAntHp);
@@ -90,4 +86,8 @@ WorldOptions::WorldOptions(FILE* file)
     int probToSpawnPest = 2;
     fscanf(file, "%i\n", &probToSpawnPest);
     probToSpawnPest_ = probToSpawnPest;
+
+    int p = 5;
+    fscanf(file, "%i\n", &p);
+    policeWorkersCount_ = p;
 }

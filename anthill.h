@@ -24,8 +24,8 @@ public:
     void Tick();
     Queen* GetQueen();
 
-    void StoreFood(int);
-    bool TakeFood(int);
+    void StoreFood(double);
+    bool TakeFood(double);
     int GetFoodAmount();
 
     int GetAntCount();
@@ -43,7 +43,7 @@ private:
     vector<Insect*>* insects_;
     bool isQueenAlive_;
 
-    int foodAmount_;
+    double foodAmount_;
 
     WorldOptions* worldOptions_;
     DayInfo* dayInfo_;

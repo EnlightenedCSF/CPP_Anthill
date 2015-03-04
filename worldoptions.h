@@ -21,7 +21,6 @@ public:
     static int getSoldierFood() { return soldierFood_; }
     static int getSoldierPestKillAmount() { return soldierPestKillAmount_; }
     static int getPoliceFood() { return policeFood_; }
-    static int getPoliceBonus() { return policeBonus_; }
     static int getWorkingAntFood() { return workingAntFood_; }
     static int getWorkingAntProduction() { return workingAntProduction_; }
     static int getLarvaFood() { return larvaFood_; }
@@ -33,6 +32,7 @@ public:
     static int getWorkingAntHp() { return workingAntHp_; }
     static int getLarvaHp() { return larvaHp_; }
     static int getPestHp() { return pestHp_; }
+    static int getPoliceWorkers() { return policeWorkersCount_; }
 
 private:
     static int queenFood_;
@@ -44,7 +44,7 @@ private:
 
     static int policeHp_;
     static int policeFood_;
-    static float policeBonus_;
+    static int policeWorkersCount_;
 
     static int workingAntHp_;
     static int workingAntFood_;

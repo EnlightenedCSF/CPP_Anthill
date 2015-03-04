@@ -8,15 +8,15 @@ public:
 
     void Refresh();
 
-    void ProduceFood(int);
-    void ConsumeFood(int);
+    void ProduceFood(double);
+    void ConsumeFood(double);
 
     void RegisterKillByPest();
     void RegisterPestKilled();
     void RegisterStarvationDeath();
 
-    int GetFoodProduced() { return foodProduction_; }
-    int GetFoodConsumed() { return foodLoss_; }
+    double GetFoodProduced() { return foodProduction_; }
+    double GetFoodConsumed() { return foodLoss_; }
 
     int GetPestKills() { return pestKills_; }
     int GetPestKilled() { return pestsKilled_; }
@@ -24,8 +24,8 @@ public:
     int GetAntsDiedFromStarvation() { return hungerDead_; }
 
 private:
-    int foodProduction_;
-    int foodLoss_;
+    double foodProduction_;
+    double foodLoss_;
 
     int pestsKilled_;
     int pestKills_;

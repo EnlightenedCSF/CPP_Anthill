@@ -17,5 +17,5 @@ void Queen::Tick() {
 }
 
 void Queen::EvolveLarva() {
-    anthill_->AddInsect(WORKING_ANT);
+    anthill_->AddInsect(POLICE_ANT);
 }
