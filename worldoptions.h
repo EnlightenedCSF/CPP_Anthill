@@ -26,7 +26,7 @@ public:
     static int getLarvaFood() { return larvaFood_; }
     static int getLarvaTicksToGrow() { return larvaTicksToGrow_; }
     static int getPestFood() { return pestFood_; }
-    static int getProbToSpawnPest() { return probToSpawnPest_; }
+    static int getDaysToSpawnPest() { return daysToSpawnPest_; }
     static int getSoldierHp() { return soldierHp_; }
     static int getPoliceHp() { return policeHp_; }
     static int getWorkingAntHp() { return workingAntHp_; }
@@ -56,7 +56,7 @@ private:
 
     static int pestHp_;
     static int pestFood_;
-    static int probToSpawnPest_;
+    static int daysToSpawnPest_;
 };
 
 #endif // WORLDOPTIONS_H

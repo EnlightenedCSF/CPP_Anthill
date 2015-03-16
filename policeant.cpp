@@ -15,10 +15,10 @@ void PoliceAnt::Tick() {
     }
 }
 
-void PoliceAnt::Penny() {
+void PoliceAnt::LostAntUnderControl() {
     workingAntsUnderControl_--;
 }
 
-void PoliceAnt::Benny() {
+void PoliceAnt::TakeAnotherAntUnderControl() {
     workingAntsUnderControl_++;
 }

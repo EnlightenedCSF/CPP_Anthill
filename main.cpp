@@ -7,8 +7,6 @@ using namespace std;
 
 #include "anthill.h"
 
-// TODO: police ant: Следит за макс 5 рабочими муравьями, которые начинают работать с +10% эффективностью
-
 int main()
 {
     srand(time(0));
@@ -35,15 +33,14 @@ int main()
 
     fprintf(config, "%i\n", 5); // pestHP
     fprintf(config, "%i\n", 2); // pestFood
-    fprintf(config, "%i\n", 5); // probToSpawnPest
+    fprintf(config, "%i\n", 2); // days to spawn pest
 
-    fprintf(config, "%i\n", 5); // police slaves count
+    fprintf(config, "%i\n", 2); // police slaves count
 
     fprintf(config, "%i\n", 70); // foodStorageSize
 
-    fprintf(config, "%c %i\n", 'w', 1);
-    fprintf(config, "%c %i\n", 'p', 1);
-    fprintf(config, "%c %i\n", 'e', 2);
+    fprintf(config, "%c %i\n", 'w', 5);
+    fprintf(config, "%c %i\n", 'p', 2);
 
     fclose(config);
 

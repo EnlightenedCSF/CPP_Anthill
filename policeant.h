@@ -11,8 +11,8 @@ public:
     PoliceAnt(Anthill*);
     void Tick();
 
-    void Penny();
-    void Benny();
+    void LostAntUnderControl();
+    void TakeAnotherAntUnderControl();
     int GetControlledAntsCount() { return workingAntsUnderControl_; }
 private:
     int workingAntsUnderControl_;

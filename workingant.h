@@ -10,12 +10,12 @@ public:
     WorkingAnt(Anthill*);
     void Tick();
 
-    void FindFather(PoliceAnt* vady) { LUKE_I_AM_YOUR_FATHER_ = vady; }
-    void LoseFather() { LUKE_I_AM_YOUR_FATHER_ = 0; }
-    bool HasFather() { return LUKE_I_AM_YOUR_FATHER_ != 0; }
-    PoliceAnt* GetFather() { return LUKE_I_AM_YOUR_FATHER_; }
+    void FindTaskMaster(PoliceAnt* taskMaster) { taskMaster_ = taskMaster; }
+    void LoseTaskMaster() { taskMaster_ = 0; }
+    bool HasTaskMaster() { return taskMaster_ != 0; }
+    PoliceAnt* GetTaskMaster() { return taskMaster_; }
 private:
-    PoliceAnt* LUKE_I_AM_YOUR_FATHER_;
+    PoliceAnt* taskMaster_;
 };
 
 #endif // WORKINGANT_H

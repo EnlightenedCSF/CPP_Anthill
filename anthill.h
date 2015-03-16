@@ -48,6 +48,9 @@ private:
     WorldOptions* worldOptions_;
     DayInfo* dayInfo_;
     int day_;
+    int dayLeftToSpawnPest_;
+
+    int GetAntUnderControlCount();
 };
 
 #endif // ANTHILL_H
