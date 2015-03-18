@@ -1,6 +1,9 @@
+#include <string>
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
+#include <sstream>
+#include <math.h>
 
 #include "anthill.h"
 #include "caterpillar.h"
@@ -13,13 +16,14 @@
 #include "soldier.h"
 #include "dayinfo.h"
 
+using namespace std;
 
 Anthill::Anthill(FILE* file)
 {
     day_ = 1;
     dayInfo_ = new DayInfo();
     worldOptions_ = new WorldOptions(file);
-    dayLeftToSpawnPest_ = WorldOptions::getDaysToSpawnPest();
+    randSumToSpawnPest_ = 3.497;
 
     int temp;
     fscanf(file, "%i\n", &temp);
@@ -29,7 +33,7 @@ Anthill::Anthill(FILE* file)
     insects_->push_back(new Queen(this));
     isQueenAlive_ = true;
 
-    char type;
+    /*char type;
     int count;
     int code;
     while (1) {
@@ -66,7 +70,7 @@ Anthill::Anthill(FILE* file)
             }
             break;
         }
-    }
+    }*/
 }
 
 Anthill::~Anthill()
@@ -81,11 +85,90 @@ Anthill::~Anthill()
     delete dayInfo_;
 }
 
+vector<string> &Anthill::Split(const string &s, char delim, vector<string> &elems) {
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+void Anthill::InputAntTypes() {
+    string command;
+
+    cout << "=== Types of ants: ===\n";
+    cout << "[l] Larva\n[w] Working ant\n[p] Police ant\n[s] Soldier\n[e] Pest ant\n";
+    cout << "----------\nInput pattern: \"<char-type><space><amount>\", for example: \"w 3\"\n[q] For exit\n\n";
+
+    do {
+        getline(cin, command);
+
+        if (command.compare("q") == 0)
+            break;
+
+        vector<string> tokens;
+        tokens = Split(command, ' ', tokens);
+        int count;
+        if (tokens.size() != 2) {
+            cout << "Error!\n";
+            continue;
+        }
+        try {
+            count = atoi(tokens[1].c_str());
+
+            switch (tokens[0][0]) {
+            case 'w':
+            case 'W':
+                for (int i = 0; i < count; i++) {
+                    AddInsect(WORKING_ANT);
+                }
+                break;
+            case 's':
+            case 'S':
+                for (int i = 0; i < count; i++) {
+                    AddInsect(SOLDIER);
+                }
+                break;
+            case 'p':
+            case 'P':
+                for (int i = 0; i < count; i++) {
+                    AddInsect(POLICE_ANT);
+                }
+                break;
+            case 'l':
+            case 'L':
+                for (int i = 0; i < count; i++) {
+                    AddInsect(LARVA);
+                }
+                break;
+            case 'e':
+            case 'E':
+                for (int i = 0; i < count; i++) {
+                    AddInsect(PEST_ANT);
+                }
+                break;
+            default:
+                break;
+            }
+
+            cout << "Added!\n";
+        }
+        catch (...) {
+            cout << "Error!\n";
+            continue;
+        }
+
+    } while (1);
+}
+
 void Anthill::Tick() {
     if (day_ != 1) {
-        if (--dayLeftToSpawnPest_ == 0) {
-            dayLeftToSpawnPest_ = WorldOptions::getDaysToSpawnPest();
+
+        randSumToSpawnPest_ += ((float) rand() / (RAND_MAX));
+        if (randSumToSpawnPest_ > WorldOptions::getDaysToSpawnPest()) {
             AddInsect(PEST_ANT);
+            randSumToSpawnPest_ -= WorldOptions::getDaysToSpawnPest();
         }
 
         for (unsigned int i = 0; i < insects_->size(); i++) {
@@ -101,7 +184,7 @@ void Anthill::Tick() {
          << "+ ; " << dayInfo_->GetFoodConsumed() << "- )\n";
 
     cout << "Queen is " << (isQueenAlive_ ? "alive" : "dead") << "\n";
-    cout << "Amount of caterpillars:\t" << population_[LARVA] << '\n';
+    cout << "Amount of larvas:\t" << population_[LARVA] << '\n';
     cout << "Amount of working ants:\t" << population_[WORKING_ANT]
             << "\t Under control: " << GetAntUnderControlCount() << '\n';
     cout << "Amount of soldiers:\t" << population_[SOLDIER] << '\n';
@@ -159,7 +242,7 @@ void Anthill::AddInsect(int antType) {
 
     switch (antType) {
     case LARVA:
-        insects_->push_back(new Caterpillar(this));
+        insects_->push_back(new larva(this));
         break;
     case WORKING_ANT:
         insects_->push_back(new WorkingAnt(this));
@@ -250,7 +333,7 @@ bool Anthill::FightWithRandomAnt(PestAnt *pest) {
                 antType = WORKING_ANT;
             else if (dynamic_cast<Soldier*>(insects_->at(index)))
                 antType = SOLDIER;
-            else if (dynamic_cast<Caterpillar*>(insects_->at(index)))
+            else if (dynamic_cast<larva*>(insects_->at(index)))
                 antType = LARVA;
             else if (dynamic_cast<PoliceAnt*>(insects_->at(index)))
                 antType = POLICE_ANT;
@@ -261,8 +344,6 @@ bool Anthill::FightWithRandomAnt(PestAnt *pest) {
 
     if (isTargetDead) {
         KillInsect(insects_->at(index), antType, false);
-//        insects_->erase(insects_->begin() + index);
-//        population_[antType]--;
     }
 
     return !pest->InflictDamage();

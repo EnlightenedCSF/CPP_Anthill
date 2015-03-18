@@ -7,6 +7,9 @@ using namespace std;
 
 #include "anthill.h"
 
+// TODO : конец симуляции
+// TODO : баг с полициейскими
+
 int main()
 {
     srand(time(0));
@@ -33,14 +36,11 @@ int main()
 
     fprintf(config, "%i\n", 5); // pestHP
     fprintf(config, "%i\n", 2); // pestFood
-    fprintf(config, "%i\n", 2); // days to spawn pest
+    fprintf(config, "%f\n", 3.5f); // days to spawn pest
 
     fprintf(config, "%i\n", 2); // police slaves count
 
     fprintf(config, "%i\n", 70); // foodStorageSize
-
-    fprintf(config, "%c %i\n", 'w', 5);
-    fprintf(config, "%c %i\n", 'p', 2);
 
     fclose(config);
 
@@ -49,6 +49,8 @@ int main()
         return -1;
 
     Anthill* anthill = new Anthill(config);
+
+    anthill->InputAntTypes();
 
     string command;
     do {

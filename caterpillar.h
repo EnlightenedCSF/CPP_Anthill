@@ -1,15 +1,15 @@
-#ifndef CATERPILLAR_H
-#define CATERPILLAR_H
+#ifndef larva_H
+#define larva_H
 
 #include "insect.h"
 
-class Caterpillar : public virtual Insect
+class larva : public virtual Insect
 {
 public:
-    Caterpillar(Anthill*);
+    larva(Anthill*);
     void Tick();
 private:
     int ticksLeft_;
 };
 
-#endif // CATERPILLAR_H
+#endif // larva_H

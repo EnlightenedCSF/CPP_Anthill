@@ -17,7 +17,7 @@ int WorldOptions::workingAntFood_;
 int WorldOptions::workingAntProduction_;
 int WorldOptions::pestFood_;
 int WorldOptions::pestHp_;
-int WorldOptions::daysToSpawnPest_;
+float WorldOptions::daysToSpawnPest_;
 int WorldOptions::policeWorkersCount_;
 
 
@@ -83,8 +83,8 @@ WorldOptions::WorldOptions(FILE* file)
     fscanf(file, "%i\n", &pestFood);
     pestFood_ = pestFood;
 
-    int daysToSpawnPest = 3;
-    fscanf(file, "%i\n", &daysToSpawnPest);
+    float daysToSpawnPest = 3.5;
+    fscanf(file, "%f\n", &daysToSpawnPest);
     daysToSpawnPest_ = daysToSpawnPest;
 
     int p = 5;

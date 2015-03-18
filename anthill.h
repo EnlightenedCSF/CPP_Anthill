@@ -1,10 +1,10 @@
-using namespace std;
-
 #ifndef ANTHILL_H
 #define ANTHILL_H
 
 #include <stdio.h>
 #include <vector>
+#include <string>
+#include <iostream>
 
 #include "insect.h"
 #include "worldoptions.h"
@@ -15,13 +15,17 @@ class Insect;
 class Soldier;
 class PestAnt;
 
+using namespace std;
 
 class Anthill
 {
 public:
     Anthill(FILE*);
     ~Anthill();
+    void InputAntTypes();
+
     void Tick();
+
     Queen* GetQueen();
 
     void StoreFood(double);
@@ -39,6 +43,7 @@ public:
     void KillQueen();
 
 private:
+    vector<string> &Split(const string &s, char delim, vector<string> &elems);
     int population_[ANT_TYPES_CNT];
     vector<Insect*>* insects_;
     bool isQueenAlive_;
@@ -48,7 +53,7 @@ private:
     WorldOptions* worldOptions_;
     DayInfo* dayInfo_;
     int day_;
-    int dayLeftToSpawnPest_;
+    float randSumToSpawnPest_;
 
     int GetAntUnderControlCount();
 };

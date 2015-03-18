@@ -38,3 +38,4 @@ HEADERS += \
     pestant.h \
     soldier.h \
     dayinfo.h
+
